@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Payment Form</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .payment-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        #card-element {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        #card-errors {
+            color: #e74c3c;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .submit-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background: #0056b3;
+        }
+
+        .submit-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            color: #28a745;
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: #d4edda;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .payment-modes {
+            margin-bottom: 20px;
+        }
+
+        .payment-mode {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-mode:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+        }
+
+        .payment-mode.selected {
+            border-color: #007bff;
+            background: #f0f7ff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .payment-mode h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .payment-mode p {
+            margin: 0 0 8px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .payment-mode .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .custom-amount-section {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .custom-amount-section.show {
+            display: block;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .payment-summary {
+            background: #e9ecef;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .payment-summary.show {
+            display: block;
+        }
+
+        .payment-summary h4 {
+            margin: 0 0 8px 0;
+            color: #495057;
+        }
+
+        .payment-summary p {
+            margin: 4px 0;
+            color: #6c757d;
+        }
+
+        .payment-summary .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            border-top: 1px solid #dee2e6;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-form">
+        <h2>Secure Payment</h2>
+        <form id="payment-form">
+            <!-- Payment Mode Selection -->
+            <div class="form-group">
+                <label>Choose what you'd like to pay for:</label>
+                <div class="payment-modes" id="payment-modes">
+                    <div class="payment-mode" data-mode="product1" data-amount="2999" data-name="Premium Course">
+                        <h4>Premium Course</h4>
+                        <p>Complete web development course with lifetime access</p>
+                        <div class="price">$29.99</div>
+                    </div>
+
+                    <div class="payment-mode" data-mode="product2" data-amount="4999" data-name="1-on-1 Consultation">
+                        <h4>1-on-1 Consultation</h4>
+                        <p>60-minute personalized consultation session</p>
+                        <div class="price">$49.99</div>
+                    </div>
+
+                    <div class="payment-mode" data-mode="product3" data-amount="9999" data-name="Business Package">
+                        <h4>Business Package</h4>
+                        <p>Complete business solution with ongoing support</p>
+                        <div class="price">$99.99</div>
+                    </div>
+
+                    <div class="payment-mode" data-mode="donation" data-amount="custom" data-name="Donation">
+                        <h4>Make a Donation</h4>
+                        <p>Support our work with a custom amount</p>
+                        <div class="price">Custom Amount</div>
+                    </div>
+
+                    <div class="payment-mode" data-mode="custom" data-amount="custom" data-name="Custom Payment">
+                        <h4>Custom Payment</h4>
+                        <p>Enter your own amount for other services</p>
+                        <div class="price">Custom Amount</div>
+                    </div>
+                </div>
+
+                <!-- Custom Amount Section -->
+                <div class="custom-amount-section" id="custom-amount-section">
+                    <label for="custom-amount">Enter Amount (USD)</label>
+                    <input type="number" id="custom-amount" step="0.01" min="0.50" placeholder="0.00">
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="payment-summary" id="payment-summary">
+                <h4>Payment Summary</h4>
+                <p id="summary-item">No item selected</p>
+                <p class="total" id="summary-total">Total: $0.00</p>
+            </div>
+
+            <div class="form-group">
+                <label for="card-element">Credit or debit card</label>
+                <div id="card-element">
+                    <!-- Stripe Elements will create form elements here -->
+                </div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <button type="submit" id="submit-button" class="submit-button" disabled>
+                Select Payment Mode
+            </button>
+        </form>
+
+        <div id="loading" class="loading">
+            Processing payment...
+        </div>
+
+        <div id="success-message" class="success-message">
+            Payment successful! Thank you for your purchase.
+        </div>
+    </div>
+
+    <script src="stripe-form.js"></script>
+</body>
+
+</html>

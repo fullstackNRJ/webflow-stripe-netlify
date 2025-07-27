@@ -1,0 +1,26 @@
+{
+    "name": "webflow-stripe-netlify",
+    "version": "1.0.0",
+    "description": "Stripe integration template for Webflow with Netlify functions",
+    "main": "index.js",
+    "scripts": {
+        "dev": "netlify dev",
+        "build": "echo 'No build step required'",
+        "deploy": "netlify deploy --prod"
+    },
+    "keywords": [
+        "stripe",
+        "webflow",
+        "netlify",
+        "payment",
+        "integration"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "stripe": "^14.21.0"
+    },
+    "devDependencies": {
+        "netlify-cli": "^17.15.4"
+    }
+}
