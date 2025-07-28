@@ -88,7 +88,7 @@ exports.handler = async (event, context) => {
 
         // Create the checkout session
         const session = await stripe.checkout.sessions.create(sessionConfig);
-
+        console.log('Checkout session created:', session);
         return {
             statusCode: 200,
             headers,

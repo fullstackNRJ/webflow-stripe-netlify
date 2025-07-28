@@ -24,7 +24,7 @@ A complete template for integrating 4. Go to your Stripe Dashboard
 
 ### 1. One-Click Deploy to Netlify
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-username/webflow-stripe-netlify)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/fullstackNRJ/webflow-stripe-netlify)
 
 ### 2. Manual Setup
 
