@@ -20,13 +20,43 @@ This guide provides step-by-step instructions for integrating the Stripe payment
 1. In Webflow Designer, drag an **Embed** element to your page
 2. Paste this code:
 ```html
-<iframe 
-  src="https://your-netlify-site.netlify.app" 
-  width="100%" 
-  height="700" 
-  frameborder="0"
-  style="border: none; border-radius: 8px;">
-</iframe>
+<div id="checkout">
+        <!-- Checkout will insert the payment form here -->
+      </div>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  async function mountStripe() {
+  async function fetchClientSecret(){
+  const response = await fetch(
+      '<YOUR_NETLIFY_SITE_URL>/.netlify/functions/create-checkout-session', //this is your netlify site url : https://amazing-site-123.netlify.app
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ metadata:{} }) /* you can pass some metadata or returnUrl. 
+         returnUrl = "",
+            metadata = {},
+            customerEmail = "",
+            these are optional but useful.
+        */   
+      }
+    );
+    
+    const { clientSecret } = await response.json();
+return clientSecret;
+}
+
+    const stripe = Stripe('<YOUR_PUBLISHABLE_STRIPE_KEY'); // your Stripe publishable key
+  	const checkout = await stripe.initEmbeddedCheckout({
+    fetchClientSecret
+  });
+
+  // Mount Checkout
+  checkout.mount('#checkout');
+  
+  }
+
+  mountStripe();
+</script>
 ```
 3. Replace `your-netlify-site.netlify.app` with your actual Netlify URL
 4. **Note**: Height increased to 700px to accommodate payment mode selection
@@ -35,6 +65,17 @@ This guide provides step-by-step instructions for integrating the Stripe payment
 - Add custom CSS to style the iframe container
 - Consider adding loading states
 - Ensure mobile responsiveness
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+
 
 ## Method 2: Direct Integration (Advanced)
 

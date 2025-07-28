@@ -4,7 +4,7 @@
     "description": "Stripe integration template for Webflow with Netlify functions",
     "main": "index.js",
     "scripts": {
-        "dev": "netlify dev --port 3003",
+        "dev": "netlify dev",
         "build": "echo 'No build step required'",
         "deploy": "netlify deploy --prod"
     },
