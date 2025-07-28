@@ -1,6 +1,10 @@
 # Webflow Stripe Netlify Integration
 
-A complete template for integrating Stripe payments with Webflow using Netlify Functions. This template provides a secure, production-ready payment form that can be easily embedded into any Webflow site.
+A complete template for integrating 4. Go to your Stripe Dashboard
+5. Navigate to **Developers** → **API keys**
+6. Copy your **Publishable key** and **Secret key**
+7. **For Checkout Sessions**: Create a Price in **Products** → **Pricing** and copy the Price ID
+8. For production, use live keys; for testing, use test keyspe payments with Webflow using Netlify Functions. This template provides a secure, production-ready payment form that can be easily embedded into any Webflow site.
 
 ## Features
 
@@ -13,6 +17,8 @@ A complete template for integrating Stripe payments with Webflow using Netlify F
 - 📱 Mobile-responsive design
 - 🔧 Environment-based configuration
 - ⚙️ **Easy configuration** - visual admin interface for payment modes
+- 💳 **Stripe Checkout Sessions** - embedded checkout with fixed price IDs
+- ✨ **Two payment methods** - Payment Intents and Checkout Sessions
 
 ## Quick Start
 
@@ -42,6 +48,7 @@ A complete template for integrating Stripe payments with Webflow using Netlify F
    ```env
    STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
    STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+   STRIPE_PRICE_ID=price_your_price_id_here
    ALLOWED_ORIGINS=http://localhost:3000,https://your-webflow-site.com
    ```
 
@@ -49,6 +56,22 @@ A complete template for integrating Stripe payments with Webflow using Netlify F
    ```bash
    npm run dev
    ```
+
+## Payment Methods
+
+This template now supports **two different payment methods**:
+
+### 1. Payment Intents (Original Method)
+- **File**: `client/index.html` and `client/stripe-form.js`
+- **Function**: `/.netlify/functions/create-payment-intent`
+- **Use case**: Custom payment forms with flexible amounts
+- **Features**: Multiple payment modes, custom amounts, direct card input
+
+### 2. Stripe Checkout Sessions (New Method)
+- **File**: `client/checkout-session.html` and `client/checkout-session.js`
+- **Function**: `/.netlify/functions/create-checkout-session`
+- **Use case**: Fixed price products with embedded Stripe Checkout
+- **Features**: Fixed price ID, quantity selection, embedded checkout UI
 
 ## Getting Your Stripe Keys
 
@@ -91,6 +114,7 @@ A complete template for integrating Stripe payments with Webflow using Netlify F
    ```bash
    netlify env:set STRIPE_PUBLISHABLE_KEY "pk_test_your_key_here"
    netlify env:set STRIPE_SECRET_KEY "sk_test_your_key_here"
+   netlify env:set STRIPE_PRICE_ID "price_your_price_id_here"
    netlify env:set ALLOWED_ORIGINS "https://your-webflow-site.com"
    ```
 
@@ -241,17 +265,22 @@ Use any future expiry date, any 3-digit CVC, and any postal code.
 ```
 webflow-stripe-netlify/
 ├── client/
-│   ├── index.html          # Payment form with mode selection
-│   ├── stripe-form.js      # Client-side JavaScript
-│   ├── payment-modes.js    # Payment modes configuration
-│   └── config.html         # Visual configuration interface
+│   ├── index.html              # Payment form with mode selection
+│   ├── stripe-form.js          # Client-side JavaScript for Payment Intents
+│   ├── payment-modes.js        # Payment modes configuration
+│   ├── config.html             # Visual configuration interface
+│   ├── checkout-session.html   # Checkout Sessions form
+│   ├── checkout-session.js     # Client-side JavaScript for Checkout Sessions
+│   └── checkout-success.html   # Success page for Checkout Sessions
 ├── netlify/
 │   └── functions/
-│       └── create-payment-intent.js  # Server-side function
-├── .env.example            # Environment variables template
-├── netlify.toml           # Netlify configuration
-├── package.json           # Dependencies
-└── README.md             # This file
+│       ├── create-payment-intent.js     # Payment Intents function
+│       ├── create-checkout-session.js   # Checkout Sessions function
+│       └── get-checkout-session.js      # Session retrieval function
+├── .env.example                # Environment variables template
+├── netlify.toml               # Netlify configuration
+├── package.json               # Dependencies
+└── README.md                  # This file
 ```
 
 ## Support

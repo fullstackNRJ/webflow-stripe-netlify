@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f6f9fc;
+            text-align: center;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #00d924;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 40px;
+        }
+
+        h1 {
+            color: #32325d;
+            margin-bottom: 16px;
+        }
+
+        .session-info {
+            background: #f6f9fc;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .session-info h3 {
+            margin-top: 0;
+            color: #32325d;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #6b7c93;
+        }
+
+        .info-value {
+            color: #32325d;
+        }
+
+        .loading {
+            display: block;
+            color: #6b7c93;
+        }
+
+        .back-button {
+            background: #635bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background: #5a52e5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        <h1>Payment Successful!</h1>
+        <p>Thank you for your purchase. Your payment has been processed successfully.</p>
+
+        <div class="session-info">
+            <h3>Payment Details</h3>
+            <div id="session-details">
+                <div class="loading">Loading payment details...</div>
+            </div>
+        </div>
+
+        <a href="checkout-session.html" class="back-button">Make Another Purchase</a>
+    </div>
+
+    <script>
+        // Configure Stripe with your publishable key
+        const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_publishable_key_here'; // Replace with your actual key
+        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+
+        // Get session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        async function retrieveSession() {
+            if (!sessionId) {
+                document.getElementById('session-details').innerHTML =
+                    '<div class="info-row"><span class="info-value">No session ID found in URL</span></div>';
+                return;
+            }
+
+            try {
+                const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+                const detailsHtml = `
+                    <div class="info-row">
+                        <span class="info-label">Session ID:</span>
+                        <span class="info-value">${session.id}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Status:</span>
+                        <span class="info-value">${session.payment_status}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Amount:</span>
+                        <span class="info-value">$${(session.amount_total / 100).toFixed(2)} ${session.currency.toUpperCase()}</span>
+                    </div>
+                    ${session.customer_details?.email ? `
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">${session.customer_details.email}</span>
+                    </div>
+                    ` : ''}
+                `;
+
+                document.getElementById('session-details').innerHTML = detailsHtml;
+
+            } catch (error) {
+                console.error('Error retrieving session:', error);
+                document.getElementById('session-details').innerHTML =
+                    '<div class="info-row"><span class="info-value">Error loading payment details</span></div>';
+            }
+        }
+
+        // Load session details when page loads
+        retrieveSession();
+    </script>
+</body>
+
+</html>

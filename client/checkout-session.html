@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Amount Checkout</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f6f9fc;
+        }
+
+        .checkout-container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #32325d;
+        }
+
+        input[type="number"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e6ebf1;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #635bff;
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+        }
+
+        .checkout-button {
+            background: #635bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+
+        .checkout-button:hover:not(:disabled) {
+            background: #5a52e5;
+        }
+
+        .checkout-button:disabled {
+            background: #aab7c4;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #e25950;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .summary {
+            background: #f6f9fc;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .summary h3 {
+            margin: 0 0 12px 0;
+            color: #32325d;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .summary-total {
+            font-weight: 600;
+            border-top: 1px solid #e6ebf1;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        #checkout {
+            margin-top: 20px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #635bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="checkout-container">
+        <h1>Custom Amount Checkout</h1>
+
+        <form id="checkout-form">
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="100" value="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer-email">Email (optional):</label>
+                <input type="email" id="customer-email" name="customer-email" placeholder="customer@example.com">
+            </div>
+
+            <div class="summary" id="summary">
+                <h3>Order Summary</h3>
+                <div class="summary-line">
+                    <span>Item</span>
+                    <span>Custom Product</span>
+                </div>
+                <div class="summary-line">
+                    <span>Quantity</span>
+                    <span id="summary-quantity">1</span>
+                </div>
+                <div class="summary-line summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">Price will be calculated by Stripe</span>
+                </div>
+            </div>
+
+            <button type="submit" class="checkout-button" id="checkout-btn">
+                Proceed to Checkout
+            </button>
+
+            <div class="error-message" id="error-message"></div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Creating checkout session...</p>
+        </div>
+
+        <!-- Stripe Checkout will be embedded here -->
+        <div id="checkout"></div>
+    </div>
+
+    <script src="checkout-session.js"></script>
+</body>
+
+</html>
