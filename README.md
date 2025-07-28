@@ -126,7 +126,7 @@ This template now supports **two different payment methods**:
 2. Paste this code:
    ```html
    <iframe 
-     src="https://your-netlify-site.netlify.app" 
+     src="https://<YOUR_NETLIFY_URL>" 
      width="100%" 
      height="600" 
      frameborder="0">
@@ -154,7 +154,7 @@ This template now supports **two different payment methods**:
 4. **Update the JavaScript configuration**
    ```javascript
    const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_key_here';
-   const NETLIFY_FUNCTION_URL = 'https://your-netlify-site.netlify.app/.netlify/functions/create-payment-intent';
+   const NETLIFY_FUNCTION_URL = 'https://<YOUR_NETLIFY_URL>/.netlify/functions/create-payment-intent';
    ```
 
 ## Customization

@@ -58,7 +58,7 @@ return clientSecret;
   mountStripe();
 </script>
 ```
-3. Replace `your-netlify-site.netlify.app` with your actual Netlify URL
+3. Replace `<YOUR_NETLIFY_URL>` with your actual Netlify URL
 4. **Note**: Height increased to 700px to accommodate payment mode selection
 
 ### Step 3: Style the Container
@@ -116,7 +116,7 @@ return clientSecret;
 3. Update these variables:
 ```javascript
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_actual_key_here';
-const NETLIFY_FUNCTION_URL = 'https://your-netlify-site.netlify.app/.netlify/functions/create-payment-intent';
+const NETLIFY_FUNCTION_URL = 'https://<YOUR_NETLIFY_URL>/.netlify/functions/create-payment-intent';
 ```
 
 ### Step 4: Style with Webflow
